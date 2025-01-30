@@ -1,10 +1,29 @@
 *.~*
 
-/.idea/
-/.vscode/
-/bin/
-/src/vendor
-/config/
-!/config/settings.json.sample
-!/config/genesis_mainnet.json
-generated*.go
+*.log
+*.swp
+.idea
+.vscode
+node_modules
+.DS_Store
+*.patch
+### Go template
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, build with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+.DS_Store
+app
+demo
+
+vendor/*
+
+/**/*_test.json

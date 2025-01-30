@@ -14,6 +14,8 @@ import (
 	"syscall"
 	"text/template"
 	"unsafe"
+
+	"golang.org/x/sys/windows"
 )
 
 // -----------------------------------------------------------------------------
@@ -75,9 +77,32 @@ type WindowsButton struct {
 
 // -----------------------------------------------------------------------------
 
-var xmlTmpl *template.Template
+var (
+	xmlTmpl *template.Template
+
+	shell32                                     = windows.NewLazySystemDLL("shell32.dll")
+	procSetCurrentProcessExplicitAppUserModelID = shell32.NewProc("SetCurrentProcessExplicitAppUserModelID")
+)
 
 // -----------------------------------------------------------------------------
+
+func SetCurrentProcessExplicitAppUserModelID(appID string) error {
+	var ret uintptr
+
+	pAppID, err := windows.UTF16PtrFromString(appID)
+	if err != nil {
+		return err
+	}
+
+	ret, _, err = procSetCurrentProcessExplicitAppUserModelID.Call(uintptr(unsafe.Pointer(pAppID)))
+	if ret != 0 {
+		if err == nil {
+			err = fmt.Errorf("SetCurrentProcessExplicitAppUserModelID returned 0x%X", ret)
+		}
+		return err
+	}
+	return nil
+}
 
 func toastInit() error {
 	var err error
